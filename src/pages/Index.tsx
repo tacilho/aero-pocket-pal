@@ -5,9 +5,7 @@ import { TransactionList } from '@/components/TransactionList';
 import { CategoryManager } from '@/components/CategoryManager';
 import { useTransactions } from '@/hooks/useTransactions';
 import { useCategories } from '@/hooks/useCategories';
-import { TransactionType } from '@/types/finance';
 import { Wallet, ChevronDown } from 'lucide-react';
-import win7Bg from '@/assets/win7-bg.jpg';
 
 type TabValue = 'income' | 'expense-daily' | 'expense-fixed';
 
@@ -18,20 +16,18 @@ const tabs: { value: TabValue; label: string }[] = [
 ];
 
 const Index = () => {
-  const { addTransaction, removeTransaction, summary, getByType } = useTransactions();
+  const { addTransaction, removeTransaction, toggleStatus, summary, getByType } = useTransactions();
   const { categories, addCategory, removeCategory } = useCategories();
   const [activeTab, setActiveTab] = useState<TabValue>('income');
   const [showCategories, setShowCategories] = useState(false);
 
   return (
-    <div className="min-h-screen relative">
-
+    <div className="min-h-screen bg-background text-foreground">
       <div className="max-w-3xl mx-auto px-4 py-6 sm:py-10 space-y-5">
-        {/* Header */}
         <header className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <Wallet className="w-5 h-5 text-primary" />
-            <h1 className="text-sm font-bold text-foreground tracking-wide uppercase">Finanças</h1>
+            <h1 className="text-sm font-bold tracking-wide uppercase">Finanças</h1>
           </div>
           <button
             onClick={() => setShowCategories(!showCategories)}
@@ -42,7 +38,6 @@ const Index = () => {
           </button>
         </header>
 
-        {/* Summary */}
         <SummaryCards
           totalIncome={summary.totalIncome}
           totalExpenseDaily={summary.totalExpenseDaily}
@@ -52,7 +47,6 @@ const Index = () => {
           daysLeft={summary.daysLeft}
         />
 
-        {/* Category Manager */}
         {showCategories && (
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {tabs.map(tab => (
@@ -67,7 +61,6 @@ const Index = () => {
           </div>
         )}
 
-        {/* Tabs + Content */}
         <div className="space-y-3">
           <div className="flex gap-1">
             {tabs.map(tab => (
@@ -90,9 +83,12 @@ const Index = () => {
             categories={categories[activeTab]}
             onAdd={addTransaction}
           />
+          
           <TransactionList
             transactions={getByType(activeTab)}
             onRemove={removeTransaction}
+            onToggleStatus={toggleStatus}
+            onEdit={(tx) => console.log("Editar:", tx)}
           />
         </div>
       </div>
