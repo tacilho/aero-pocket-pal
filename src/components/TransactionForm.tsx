@@ -91,7 +91,7 @@ export function TransactionForm({ type, categories, onAdd }: Props) {
             onChange={e => setCategory(e.target.value)}
           >
             <option value="">Sem categoria</option>
-            {categories.map(cat => (
+            {(categories || []).map(cat => (
               <option key={cat} value={cat}>{cat}</option>
             ))}
           </select>
