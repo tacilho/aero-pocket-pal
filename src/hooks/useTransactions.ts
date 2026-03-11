@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { Transaction, TransactionType } from '@/types/finance';
-import { differenceInDays, endOfMonth, parseISO } from 'date-fns';
+import { differenceInDays, endOfMonth } from 'date-fns';
 
 export function useTransactions() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -34,19 +34,10 @@ export function useTransactions() {
     const daysLeft = Math.max(differenceInDays(monthEnd, today), 1);
     const dailyAverage = remaining > 0 ? remaining / daysLeft : 0;
 
-    return {
-      totalIncome,
-      totalExpenseDaily,
-      totalExpenseFixed,
-      totalExpenses,
-      remaining,
-      dailyAverage,
-      daysLeft,
-    };
+    return { totalIncome, totalExpenseDaily, totalExpenseFixed, totalExpenses, remaining, dailyAverage, daysLeft };
   }, [transactions]);
 
-  const getByType = (type: TransactionType) =>
-    transactions.filter(t => t.type === type);
+  const getByType = (type: TransactionType) => transactions.filter(t => t.type === type);
 
   return { transactions, addTransaction, removeTransaction, summary, getByType };
 }

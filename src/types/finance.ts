@@ -5,10 +5,10 @@ export interface Transaction {
   type: TransactionType;
   description: string;
   value: number;
-  date: string;
-  category: string;
+  date?: string;
+  category?: string;
 }
 
-export const INCOME_CATEGORIES = ['Salário', 'Bônus', 'Freelance', 'Investimentos', 'Outros'];
-export const EXPENSE_DAILY_CATEGORIES = ['Alimentação', 'Transporte', 'Lazer', 'Compras', 'Outros'];
-export const EXPENSE_FIXED_CATEGORIES = ['Aluguel', 'Internet', 'Energia', 'Água', 'Plano de Saúde', 'Streaming', 'Outros'];
+export const DEFAULT_INCOME_CATEGORIES = ['Salário', 'Bônus', 'Freelance', 'Investimentos'];
+export const DEFAULT_EXPENSE_DAILY_CATEGORIES = ['Alimentação', 'Transporte', 'Lazer', 'Compras'];
+export const DEFAULT_EXPENSE_FIXED_CATEGORIES = ['Aluguel', 'Internet', 'Energia', 'Água', 'Plano de Saúde', 'Streaming'];
