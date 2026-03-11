@@ -20,60 +20,68 @@ export function SummaryCards({
   dailyAverage,
   daysLeft,
 }: SummaryProps) {
+  const cards = [
+    {
+      label: 'Recebimentos',
+      value: fmt(totalIncome),
+      icon: TrendingUp,
+      colorClass: 'text-income',
+      bgClass: 'bg-income/20',
+      cardClass: 'summary-card-income',
+    },
+    {
+      label: 'Despesas Diárias',
+      value: fmt(totalExpenseDaily),
+      icon: Receipt,
+      colorClass: 'text-expense-daily',
+      bgClass: 'bg-expense-daily/20',
+      cardClass: 'summary-card-expense-daily',
+    },
+    {
+      label: 'Despesas Fixas',
+      value: fmt(totalExpenseFixed),
+      icon: TrendingDown,
+      colorClass: 'text-expense-fixed',
+      bgClass: 'bg-expense-fixed/20',
+      cardClass: 'summary-card-expense-fixed',
+    },
+    {
+      label: 'Saldo',
+      value: fmt(remaining),
+      icon: Wallet,
+      colorClass: remaining >= 0 ? 'text-income' : 'text-destructive',
+      bgClass: 'bg-primary/20',
+      cardClass: 'summary-card-remaining',
+    },
+    {
+      label: 'Média/Dia',
+      value: fmt(dailyAverage),
+      icon: CalendarDays,
+      colorClass: 'text-accent',
+      bgClass: 'bg-accent/20',
+      cardClass: 'summary-card-average',
+      subtitle: `${daysLeft} dias restantes`,
+    },
+  ];
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-      <div className="summary-card summary-card-income">
-        <div className="flex items-center gap-2 mb-2">
-          <div className="p-2 rounded-xl bg-income/20">
-            <TrendingUp className="w-5 h-5 text-income" />
+    <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
+      {cards.map(c => (
+        <div key={c.label} className={`summary-card ${c.cardClass}`}>
+          <div className="relative z-10">
+            <div className="flex items-center gap-2 mb-2">
+              <div className={`p-1.5 rounded-lg ${c.bgClass}`}>
+                <c.icon className={`w-4 h-4 ${c.colorClass}`} />
+              </div>
+              <span className="text-xs font-semibold text-muted-foreground">{c.label}</span>
+            </div>
+            <p className={`text-lg lg:text-xl font-bold ${c.colorClass}`}>{c.value}</p>
+            {c.subtitle && (
+              <p className="text-[10px] text-muted-foreground mt-0.5">{c.subtitle}</p>
+            )}
           </div>
-          <span className="text-sm font-semibold text-muted-foreground">Recebimentos</span>
         </div>
-        <p className="text-2xl font-bold text-foreground">{fmt(totalIncome)}</p>
-      </div>
-
-      <div className="summary-card summary-card-expense-daily">
-        <div className="flex items-center gap-2 mb-2">
-          <div className="p-2 rounded-xl bg-expense-daily/20">
-            <Receipt className="w-5 h-5 text-expense-daily" />
-          </div>
-          <span className="text-sm font-semibold text-muted-foreground">Despesas Diárias</span>
-        </div>
-        <p className="text-2xl font-bold text-foreground">{fmt(totalExpenseDaily)}</p>
-      </div>
-
-      <div className="summary-card summary-card-expense-fixed">
-        <div className="flex items-center gap-2 mb-2">
-          <div className="p-2 rounded-xl bg-expense-fixed/20">
-            <TrendingDown className="w-5 h-5 text-expense-fixed" />
-          </div>
-          <span className="text-sm font-semibold text-muted-foreground">Despesas Fixas</span>
-        </div>
-        <p className="text-2xl font-bold text-foreground">{fmt(totalExpenseFixed)}</p>
-      </div>
-
-      <div className="summary-card summary-card-remaining">
-        <div className="flex items-center gap-2 mb-2">
-          <div className="p-2 rounded-xl bg-primary/20">
-            <Wallet className="w-5 h-5 text-primary" />
-          </div>
-          <span className="text-sm font-semibold text-muted-foreground">Saldo</span>
-        </div>
-        <p className={`text-2xl font-bold ${remaining >= 0 ? 'text-income' : 'text-destructive'}`}>
-          {fmt(remaining)}
-        </p>
-      </div>
-
-      <div className="summary-card summary-card-average">
-        <div className="flex items-center gap-2 mb-2">
-          <div className="p-2 rounded-xl bg-secondary/20">
-            <CalendarDays className="w-5 h-5 text-secondary" />
-          </div>
-          <span className="text-sm font-semibold text-muted-foreground">Média/Dia</span>
-        </div>
-        <p className="text-2xl font-bold text-foreground">{fmt(dailyAverage)}</p>
-        <p className="text-xs text-muted-foreground mt-1">{daysLeft} dias restantes</p>
-      </div>
+      ))}
     </div>
   );
 }

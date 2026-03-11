@@ -1,6 +1,5 @@
 import { Transaction, TransactionType } from '@/types/finance';
 import { Trash2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { format, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
@@ -10,9 +9,9 @@ interface Props {
 }
 
 const typeColors: Record<TransactionType, string> = {
-  income: 'bg-income/10 text-income',
-  'expense-daily': 'bg-expense-daily/10 text-expense-daily',
-  'expense-fixed': 'bg-expense-fixed/10 text-expense-fixed',
+  income: 'bg-income/15 text-income',
+  'expense-daily': 'bg-expense-daily/15 text-expense-daily',
+  'expense-fixed': 'bg-expense-fixed/15 text-expense-fixed',
 };
 
 const fmt = (v: number) =>
@@ -21,43 +20,45 @@ const fmt = (v: number) =>
 export function TransactionList({ transactions, onRemove }: Props) {
   if (transactions.length === 0) {
     return (
-      <div className="glass-card p-8 text-center text-muted-foreground">
-        <p>Nenhum lançamento ainda. Adicione acima!</p>
+      <div className="aero-glass p-6 text-center text-muted-foreground relative">
+        <p className="relative z-10 text-sm">Nenhum lançamento ainda.</p>
       </div>
     );
   }
 
   return (
-    <div className="glass-card overflow-hidden">
-      <div className="divide-y divide-border">
+    <div className="aero-glass overflow-hidden">
+      <div className="relative z-10 divide-y divide-border/50">
         {transactions.map(tx => (
           <div
             key={tx.id}
-            className="flex items-center justify-between p-4 hover:bg-muted/30 transition-colors"
+            className="flex items-center justify-between px-4 py-3 hover:bg-primary/5 transition-colors"
           >
             <div className="flex items-center gap-3 min-w-0">
-              <span className={`text-xs font-semibold px-2.5 py-1 rounded-full whitespace-nowrap ${typeColors[tx.type]}`}>
-                {tx.category}
-              </span>
+              {tx.category && (
+                <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full whitespace-nowrap ${typeColors[tx.type]}`}>
+                  {tx.category}
+                </span>
+              )}
               <div className="min-w-0">
-                <p className="font-semibold text-foreground truncate">{tx.description}</p>
-                <p className="text-xs text-muted-foreground">
-                  {format(parseISO(tx.date), "dd 'de' MMM, yyyy", { locale: ptBR })}
-                </p>
+                <p className="text-sm font-semibold text-foreground truncate">{tx.description}</p>
+                {tx.date && (
+                  <p className="text-[10px] text-muted-foreground">
+                    {format(parseISO(tx.date), "dd 'de' MMM, yyyy", { locale: ptBR })}
+                  </p>
+                )}
               </div>
             </div>
-            <div className="flex items-center gap-3 shrink-0">
-              <span className={`font-bold ${tx.type === 'income' ? 'text-income' : 'text-destructive'}`}>
+            <div className="flex items-center gap-2 shrink-0">
+              <span className={`text-sm font-bold ${tx.type === 'income' ? 'text-income' : 'text-destructive'}`}>
                 {tx.type === 'income' ? '+' : '-'} {fmt(tx.value)}
               </span>
-              <Button
-                variant="ghost"
-                size="icon"
+              <button
                 onClick={() => onRemove(tx.id)}
-                className="text-muted-foreground hover:text-destructive"
+                className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
               >
-                <Trash2 className="w-4 h-4" />
-              </Button>
+                <Trash2 className="w-3.5 h-3.5" />
+              </button>
             </div>
           </div>
         ))}

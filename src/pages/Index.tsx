@@ -1,34 +1,55 @@
 import { useState } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { SummaryCards } from '@/components/SummaryCards';
 import { TransactionForm } from '@/components/TransactionForm';
 import { TransactionList } from '@/components/TransactionList';
+import { CategoryManager } from '@/components/CategoryManager';
 import { useTransactions } from '@/hooks/useTransactions';
-import { Wallet } from 'lucide-react';
-import aeroBg from '@/assets/aero-bg.jpg';
+import { useCategories } from '@/hooks/useCategories';
+import { TransactionType } from '@/types/finance';
+import { Wallet, Settings } from 'lucide-react';
+import win7Bg from '@/assets/win7-bg.jpg';
+
+type TabValue = 'income' | 'expense-daily' | 'expense-fixed';
+
+const tabs: { value: TabValue; label: string }[] = [
+  { value: 'income', label: 'Entradas' },
+  { value: 'expense-daily', label: 'Despesas Diárias' },
+  { value: 'expense-fixed', label: 'Despesas Fixas' },
+];
 
 const Index = () => {
-  const { transactions, addTransaction, removeTransaction, summary, getByType } = useTransactions();
+  const { addTransaction, removeTransaction, summary, getByType } = useTransactions();
+  const { categories, addCategory, removeCategory } = useCategories();
+  const [activeTab, setActiveTab] = useState<TabValue>('income');
+  const [showCategories, setShowCategories] = useState(false);
 
   return (
     <div className="min-h-screen relative">
-      {/* Aero background */}
+      {/* Win7 background */}
       <div
-        className="fixed inset-0 -z-10 bg-cover bg-center"
-        style={{ backgroundImage: `url(${aeroBg})` }}
+        className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${win7Bg})` }}
       />
-      <div className="fixed inset-0 -z-10 bg-background/60 backdrop-blur-sm" />
 
-      <div className="container max-w-6xl mx-auto px-4 py-8 space-y-8">
-        {/* Header */}
-        <header className="glass-card-strong p-6 flex items-center gap-4">
-          <div className="p-3 rounded-2xl aero-gradient">
-            <Wallet className="w-8 h-8 text-primary-foreground" />
+      <div className="max-w-6xl mx-auto px-3 sm:px-6 py-4 sm:py-8 space-y-4 sm:space-y-6">
+        {/* Header — Aero titlebar style */}
+        <header className="aero-titlebar px-4 sm:px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-primary/30">
+              <Wallet className="w-5 h-5 sm:w-6 sm:h-6 text-primary-foreground" />
+            </div>
+            <div>
+              <h1 className="text-base sm:text-lg font-bold text-foreground">Minhas Finanças</h1>
+              <p className="text-[10px] sm:text-xs text-muted-foreground">Controle de entradas e despesas</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-2xl font-extrabold text-foreground">Minhas Finanças</h1>
-            <p className="text-sm text-muted-foreground">Controle suas entradas e despesas</p>
-          </div>
+          <button
+            onClick={() => setShowCategories(!showCategories)}
+            className={`win7-btn rounded-md h-8 px-3 text-xs flex items-center gap-1.5 ${showCategories ? 'ring-1 ring-primary' : ''}`}
+          >
+            <Settings className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Categorias</span>
+          </button>
         </header>
 
         {/* Summary */}
@@ -41,35 +62,47 @@ const Index = () => {
           daysLeft={summary.daysLeft}
         />
 
+        {/* Category Manager */}
+        {showCategories && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            {tabs.map(tab => (
+              <CategoryManager
+                key={tab.value}
+                type={tab.value}
+                categories={categories[tab.value]}
+                onAdd={(name) => addCategory(tab.value, name)}
+                onRemove={(name) => removeCategory(tab.value, name)}
+              />
+            ))}
+          </div>
+        )}
+
         {/* Tabs */}
-        <Tabs defaultValue="income" className="space-y-6">
-          <TabsList className="glass-card-strong p-1 h-auto gap-1 w-full sm:w-auto">
-            <TabsTrigger value="income" className="data-[state=active]:aero-gradient data-[state=active]:text-primary-foreground rounded-xl px-4 py-2.5 font-semibold">
-              Entradas
-            </TabsTrigger>
-            <TabsTrigger value="expense-daily" className="data-[state=active]:aero-gradient-warm data-[state=active]:text-primary-foreground rounded-xl px-4 py-2.5 font-semibold">
-              Despesas Diárias
-            </TabsTrigger>
-            <TabsTrigger value="expense-fixed" className="data-[state=active]:bg-expense-fixed data-[state=active]:text-expense-fixed-foreground rounded-xl px-4 py-2.5 font-semibold">
-              Despesas Fixas
-            </TabsTrigger>
-          </TabsList>
+        <div className="space-y-0">
+          <div className="flex gap-0.5 px-1">
+            {tabs.map(tab => (
+              <button
+                key={tab.value}
+                onClick={() => setActiveTab(tab.value)}
+                className={`aero-tab text-xs sm:text-sm ${activeTab === tab.value ? 'aero-tab-active' : ''}`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
 
-          <TabsContent value="income" className="space-y-4">
-            <TransactionForm type="income" onAdd={addTransaction} />
-            <TransactionList transactions={getByType('income')} onRemove={removeTransaction} />
-          </TabsContent>
-
-          <TabsContent value="expense-daily" className="space-y-4">
-            <TransactionForm type="expense-daily" onAdd={addTransaction} />
-            <TransactionList transactions={getByType('expense-daily')} onRemove={removeTransaction} />
-          </TabsContent>
-
-          <TabsContent value="expense-fixed" className="space-y-4">
-            <TransactionForm type="expense-fixed" onAdd={addTransaction} />
-            <TransactionList transactions={getByType('expense-fixed')} onRemove={removeTransaction} />
-          </TabsContent>
-        </Tabs>
+          <div className="space-y-3">
+            <TransactionForm
+              type={activeTab}
+              categories={categories[activeTab]}
+              onAdd={addTransaction}
+            />
+            <TransactionList
+              transactions={getByType(activeTab)}
+              onRemove={removeTransaction}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -1,21 +1,12 @@
 import { useState } from 'react';
-import { TransactionType, INCOME_CATEGORIES, EXPENSE_DAILY_CATEGORIES, EXPENSE_FIXED_CATEGORIES } from '@/types/finance';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Label } from '@/components/ui/label';
+import { TransactionType } from '@/types/finance';
 import { Plus } from 'lucide-react';
 
 interface Props {
   type: TransactionType;
-  onAdd: (tx: { type: TransactionType; description: string; value: number; date: string; category: string }) => void;
+  categories: string[];
+  onAdd: (tx: { type: TransactionType; description: string; value: number; date?: string; category?: string }) => void;
 }
-
-const categoryMap: Record<TransactionType, string[]> = {
-  income: INCOME_CATEGORIES,
-  'expense-daily': EXPENSE_DAILY_CATEGORIES,
-  'expense-fixed': EXPENSE_FIXED_CATEGORIES,
-};
 
 const labelMap: Record<TransactionType, { dateLabel: string; title: string }> = {
   income: { dateLabel: 'Previsão de Recebimento', title: 'Nova Entrada' },
@@ -23,25 +14,24 @@ const labelMap: Record<TransactionType, { dateLabel: string; title: string }> = 
   'expense-fixed': { dateLabel: 'Data do Pagamento', title: 'Nova Despesa Fixa' },
 };
 
-export function TransactionForm({ type, onAdd }: Props) {
+export function TransactionForm({ type, categories, onAdd }: Props) {
   const [description, setDescription] = useState('');
   const [value, setValue] = useState('');
   const [date, setDate] = useState('');
   const [category, setCategory] = useState('');
 
-  const categories = categoryMap[type];
   const labels = labelMap[type];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!description.trim() || !value || !date || !category) return;
+    if (!description.trim() || !value) return;
 
     onAdd({
       type,
       description: description.trim(),
       value: parseFloat(value),
-      date,
-      category,
+      date: date || undefined,
+      category: category || undefined,
     });
 
     setDescription('');
@@ -51,14 +41,16 @@ export function TransactionForm({ type, onAdd }: Props) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="glass-card p-5 space-y-4">
-      <h3 className="text-lg font-bold text-foreground">{labels.title}</h3>
+    <form onSubmit={handleSubmit} className="aero-glass p-4 space-y-3">
+      <h3 className="relative z-10 text-sm font-bold text-foreground">{labels.title}</h3>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor={`desc-${type}`}>Descrição</Label>
-          <Input
-            id={`desc-${type}`}
+      <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="space-y-1">
+          <label className="text-xs font-semibold text-muted-foreground">
+            Descrição <span className="text-destructive">*</span>
+          </label>
+          <input
+            className="aero-input w-full h-9 px-3 text-sm"
             placeholder="Ex: Salário mensal"
             value={description}
             onChange={e => setDescription(e.target.value)}
@@ -66,10 +58,12 @@ export function TransactionForm({ type, onAdd }: Props) {
           />
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor={`value-${type}`}>Valor (R$)</Label>
-          <Input
-            id={`value-${type}`}
+        <div className="space-y-1">
+          <label className="text-xs font-semibold text-muted-foreground">
+            Valor (R$) <span className="text-destructive">*</span>
+          </label>
+          <input
+            className="aero-input w-full h-9 px-3 text-sm"
             type="number"
             step="0.01"
             min="0.01"
@@ -79,35 +73,35 @@ export function TransactionForm({ type, onAdd }: Props) {
           />
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor={`date-${type}`}>{labels.dateLabel}</Label>
-          <Input
-            id={`date-${type}`}
+        <div className="space-y-1">
+          <label className="text-xs font-semibold text-muted-foreground">{labels.dateLabel}</label>
+          <input
+            className="aero-input w-full h-9 px-3 text-sm"
             type="date"
             value={date}
             onChange={e => setDate(e.target.value)}
           />
         </div>
 
-        <div className="space-y-2">
-          <Label>Categoria</Label>
-          <Select value={category} onValueChange={setCategory}>
-            <SelectTrigger>
-              <SelectValue placeholder="Selecione" />
-            </SelectTrigger>
-            <SelectContent>
-              {categories.map(cat => (
-                <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        <div className="space-y-1">
+          <label className="text-xs font-semibold text-muted-foreground">Categoria</label>
+          <select
+            className="aero-input w-full h-9 px-3 text-sm"
+            value={category}
+            onChange={e => setCategory(e.target.value)}
+          >
+            <option value="">Sem categoria</option>
+            {categories.map(cat => (
+              <option key={cat} value={cat}>{cat}</option>
+            ))}
+          </select>
         </div>
       </div>
 
-      <Button type="submit" className="w-full sm:w-auto gap-2">
+      <button type="submit" className="relative z-10 win7-btn rounded-md h-9 px-4 text-sm flex items-center gap-2">
         <Plus className="w-4 h-4" />
         Adicionar
-      </Button>
+      </button>
     </form>
   );
 }
