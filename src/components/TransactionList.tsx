@@ -39,17 +39,21 @@ export function TransactionList({ transactions, onRemove }: Props) {
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-3 shrink-0">
-            <span className={`text-sm font-bold tabular-nums ${tx.type === 'income' ? 'text-income' : 'text-destructive'}`}>
-              {tx.type === 'income' ? '+' : '−'} {fmt(tx.value)}
-            </span>
-            <button
-              onClick={() => onRemove(tx.id)}
-              className="p-1 rounded text-muted-foreground/0 group-hover:text-muted-foreground hover:!text-destructive transition-colors"
-            >
-              <Trash2 className="w-3.5 h-3.5" />
-            </button>
-          </div>
+<div className="flex items-center gap-3">
+  <input 
+    type="checkbox" 
+    checked={tx.completed} 
+    onChange={() => onToggleStatus(tx.id)}
+    className="h-4 w-4 rounded border-border bg-input text-primary focus:ring-ring"
+  />
+  <span className={`flex-1 ${tx.completed ? 'line-through text-muted-foreground' : ''}`}>
+    {tx.description}
+  </span>
+  <button onClick={() => onEdit(tx)} className="p-1 hover:bg-muted rounded">
+    <Pencil className="w-4 h-4" />
+  </button>
+  {/* Botão de remover existente */}
+</div>
         </div>
       ))}
     </div>
