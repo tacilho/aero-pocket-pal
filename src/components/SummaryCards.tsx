@@ -1,5 +1,3 @@
-import { TrendingUp, TrendingDown, Wallet, CalendarDays, Receipt } from 'lucide-react';
-
 interface SummaryProps {
   totalIncome: number;
   totalExpenseDaily: number;
@@ -20,66 +18,20 @@ export function SummaryCards({
   dailyAverage,
   daysLeft,
 }: SummaryProps) {
-  const cards = [
-    {
-      label: 'Recebimentos',
-      value: fmt(totalIncome),
-      icon: TrendingUp,
-      colorClass: 'text-income',
-      bgClass: 'bg-income/20',
-      cardClass: 'summary-card-income',
-    },
-    {
-      label: 'Despesas Diárias',
-      value: fmt(totalExpenseDaily),
-      icon: Receipt,
-      colorClass: 'text-expense-daily',
-      bgClass: 'bg-expense-daily/20',
-      cardClass: 'summary-card-expense-daily',
-    },
-    {
-      label: 'Despesas Fixas',
-      value: fmt(totalExpenseFixed),
-      icon: TrendingDown,
-      colorClass: 'text-expense-fixed',
-      bgClass: 'bg-expense-fixed/20',
-      cardClass: 'summary-card-expense-fixed',
-    },
-    {
-      label: 'Saldo',
-      value: fmt(remaining),
-      icon: Wallet,
-      colorClass: remaining >= 0 ? 'text-income' : 'text-destructive',
-      bgClass: 'bg-primary/20',
-      cardClass: 'summary-card-remaining',
-    },
-    {
-      label: 'Média/Dia',
-      value: fmt(dailyAverage),
-      icon: CalendarDays,
-      colorClass: 'text-accent',
-      bgClass: 'bg-accent/20',
-      cardClass: 'summary-card-average',
-      subtitle: `${daysLeft} dias restantes`,
-    },
+  const items = [
+    { label: 'Recebimentos', value: fmt(totalIncome), color: 'text-income' },
+    { label: 'Desp. Diárias', value: fmt(totalExpenseDaily), color: 'text-expense-daily' },
+    { label: 'Desp. Fixas', value: fmt(totalExpenseFixed), color: 'text-expense-fixed' },
+    { label: 'Saldo', value: fmt(remaining), color: remaining >= 0 ? 'text-income' : 'text-destructive' },
+    { label: `Média/dia (${daysLeft}d)`, value: fmt(dailyAverage), color: 'text-primary' },
   ];
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
-      {cards.map(c => (
-        <div key={c.label} className={`summary-card ${c.cardClass}`}>
-          <div className="relative z-10">
-            <div className="flex items-center gap-2 mb-2">
-              <div className={`p-1.5 rounded-lg ${c.bgClass}`}>
-                <c.icon className={`w-4 h-4 ${c.colorClass}`} />
-              </div>
-              <span className="text-xs font-semibold text-muted-foreground">{c.label}</span>
-            </div>
-            <p className={`text-lg lg:text-xl font-bold ${c.colorClass}`}>{c.value}</p>
-            {c.subtitle && (
-              <p className="text-[10px] text-muted-foreground mt-0.5">{c.subtitle}</p>
-            )}
-          </div>
+    <div className="glass-panel p-4 grid grid-cols-2 sm:grid-cols-5 gap-4">
+      {items.map(item => (
+        <div key={item.label} className="space-y-0.5">
+          <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">{item.label}</p>
+          <p className={`text-base sm:text-lg font-bold ${item.color}`}>{item.value}</p>
         </div>
       ))}
     </div>
