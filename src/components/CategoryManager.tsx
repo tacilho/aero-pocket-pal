@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { TransactionType } from '@/types/finance';
-import { Plus, X, Tag } from 'lucide-react';
+import { Plus, X } from 'lucide-react';
 
 interface Props {
   type: TransactionType;
@@ -11,8 +11,8 @@ interface Props {
 
 const typeLabel: Record<TransactionType, string> = {
   income: 'Entradas',
-  'expense-daily': 'Despesas Diárias',
-  'expense-fixed': 'Despesas Fixas',
+  'expense-daily': 'Diárias',
+  'expense-fixed': 'Fixas',
 };
 
 export function CategoryManager({ type, categories, onAdd, onRemove }: Props) {
@@ -26,35 +26,29 @@ export function CategoryManager({ type, categories, onAdd, onRemove }: Props) {
   };
 
   return (
-    <div className="aero-glass p-4 space-y-3">
-      <div className="relative z-10 flex items-center gap-2">
-        <Tag className="w-4 h-4 text-muted-foreground" />
-        <h3 className="text-sm font-bold text-foreground">Categorias — {typeLabel[type]}</h3>
-      </div>
+    <div className="glass-panel p-3 space-y-2">
+      <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">{typeLabel[type]}</p>
 
-      <div className="relative z-10 flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-1.5">
         {categories.map(cat => (
           <span
             key={cat}
-            className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full bg-primary/15 text-primary"
+            className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded bg-muted text-foreground"
           >
             {cat}
-            <button
-              onClick={() => onRemove(cat)}
-              className="hover:text-destructive transition-colors"
-            >
+            <button onClick={() => onRemove(cat)} className="hover:text-destructive transition-colors">
               <X className="w-3 h-3" />
             </button>
           </span>
         ))}
         {categories.length === 0 && (
-          <span className="text-xs text-muted-foreground">Nenhuma categoria.</span>
+          <span className="text-xs text-muted-foreground">Nenhuma.</span>
         )}
       </div>
 
-      <div className="relative z-10 flex gap-2">
+      <div className="flex gap-1.5">
         <input
-          className="aero-input h-8 px-3 text-sm flex-1"
+          className="h-7 px-2 text-xs bg-input border border-border rounded-md text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring flex-1"
           placeholder="Nova categoria..."
           value={newCat}
           onChange={e => setNewCat(e.target.value)}
@@ -64,10 +58,9 @@ export function CategoryManager({ type, categories, onAdd, onRemove }: Props) {
         <button
           type="button"
           onClick={handleAdd}
-          className="win7-btn rounded-md h-8 px-3 text-xs flex items-center gap-1"
+          className="h-7 px-2 rounded-md bg-primary/20 text-primary text-xs hover:bg-primary/30 transition-colors"
         >
           <Plus className="w-3 h-3" />
-          Adicionar
         </button>
       </div>
     </div>
