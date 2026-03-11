@@ -5,12 +5,28 @@ import { differenceInDays, endOfMonth } from 'date-fns';
 export function useTransactions() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
-  const addTransaction = (tx: Omit<Transaction, 'id'>) => {
-    setTransactions(prev => [...prev, { ...tx, id: crypto.randomUUID() }]);
+  const addTransaction = (tx: Omit<Transaction, 'id' | 'completed'>) => {
+    setTransactions(prev => [...prev, { 
+      ...tx, 
+      id: crypto.randomUUID(),
+      completed: false 
+    }]);
   };
 
   const removeTransaction = (id: string) => {
     setTransactions(prev => prev.filter(t => t.id !== id));
+  };
+
+  const toggleStatus = (id: string) => {
+    setTransactions(prev => prev.map(t => 
+      t.id === id ? { ...t, completed: !t.completed } : t
+    ));
+  };
+
+  const updateTransaction = (id: string, updatedData: Partial<Transaction>) => {
+    setTransactions(prev => prev.map(t => 
+      t.id === id ? { ...t, ...updatedData } : t
+    ));
   };
 
   const summary = useMemo(() => {
@@ -34,29 +50,18 @@ export function useTransactions() {
     const daysLeft = Math.max(differenceInDays(monthEnd, today), 1);
     const dailyAverage = remaining > 0 ? remaining / daysLeft : 0;
 
-    // Dentro do hook useTransactions:
-const toggleStatus = (id: string) => {
-  setTransactions(prev => prev.map(t => 
-    t.id === id ? { ...t, completed: !t.completed } : t
-  ));
-};
-
-const updateTransaction = (id: string, updatedData: Partial<Transaction>) => {
-  setTransactions(prev => prev.map(t => 
-    t.id === id ? { ...t, ...updatedData } : t
-  ));
-};
-
-const updateTransaction = (id: string, updatedData: Partial<Transaction>) => {
-  setTransactions(prev => prev.map(t => 
-    t.id === id ? { ...t, ...updatedData } : t
-  ));
-};
-
     return { totalIncome, totalExpenseDaily, totalExpenseFixed, totalExpenses, remaining, dailyAverage, daysLeft };
   }, [transactions]);
 
   const getByType = (type: TransactionType) => transactions.filter(t => t.type === type);
 
-  return { transactions, addTransaction, removeTransaction, summary, getByType };
+  return { 
+    transactions, 
+    addTransaction, 
+    removeTransaction, 
+    toggleStatus, 
+    updateTransaction, 
+    summary, 
+    getByType 
+  };
 }
