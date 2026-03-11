@@ -70,7 +70,6 @@ export function TransactionForm({ type, categories, onAdd }: Props) {
           className="h-9 px-4 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors flex items-center gap-1.5"
         >
           <Plus className="w-4 h-4" />
-          <span className="hidden sm:inline">Adicionar</span>
         </button>
       </div>
     </form>
