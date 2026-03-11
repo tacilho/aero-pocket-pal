@@ -7,6 +7,7 @@ export interface Transaction {
   value: number;
   date?: string;
   category?: string;
+  completed: boolean; // Adicionado para suportar o status
 }
 
 export const DEFAULT_INCOME_CATEGORIES = ['Salário', 'Bônus', 'Freelance', 'Investimentos'];
