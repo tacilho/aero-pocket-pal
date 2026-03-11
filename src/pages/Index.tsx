@@ -25,10 +25,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen relative">
-      <div
-        className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(${win7Bg})` }}
-      />
 
       <div className="max-w-3xl mx-auto px-4 py-6 sm:py-10 space-y-5">
         {/* Header */}
