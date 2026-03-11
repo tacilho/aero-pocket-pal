@@ -13,6 +13,9 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ['Nunito', 'sans-serif'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -46,6 +49,22 @@ export default {
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
+        },
+        income: {
+          DEFAULT: "hsl(var(--income))",
+          foreground: "hsl(var(--income-foreground))",
+        },
+        "expense-daily": {
+          DEFAULT: "hsl(var(--expense-daily))",
+          foreground: "hsl(var(--expense-daily-foreground))",
+        },
+        "expense-fixed": {
+          DEFAULT: "hsl(var(--expense-fixed))",
+          foreground: "hsl(var(--expense-fixed-foreground))",
+        },
+        remaining: {
+          DEFAULT: "hsl(var(--remaining))",
+          foreground: "hsl(var(--remaining-foreground))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
