@@ -34,6 +34,25 @@ export function useTransactions() {
     const daysLeft = Math.max(differenceInDays(monthEnd, today), 1);
     const dailyAverage = remaining > 0 ? remaining / daysLeft : 0;
 
+    // Dentro do hook useTransactions:
+const toggleStatus = (id: string) => {
+  setTransactions(prev => prev.map(t => 
+    t.id === id ? { ...t, completed: !t.completed } : t
+  ));
+};
+
+const updateTransaction = (id: string, updatedData: Partial<Transaction>) => {
+  setTransactions(prev => prev.map(t => 
+    t.id === id ? { ...t, ...updatedData } : t
+  ));
+};
+
+const updateTransaction = (id: string, updatedData: Partial<Transaction>) => {
+  setTransactions(prev => prev.map(t => 
+    t.id === id ? { ...t, ...updatedData } : t
+  ));
+};
+
     return { totalIncome, totalExpenseDaily, totalExpenseFixed, totalExpenses, remaining, dailyAverage, daysLeft };
   }, [transactions]);
 
